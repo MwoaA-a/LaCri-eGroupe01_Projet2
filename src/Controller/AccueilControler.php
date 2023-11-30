@@ -39,4 +39,12 @@ class AccueilControler extends AbstractController
             'controller_name' => 'AccueilControler',
         ]);
     }
+
+    #[Route('/info', name: 'app_info')]
+    public function info(): Response
+    {
+        return $this->render('accueil/info.html.twig', [
+            'controller_name' => 'AccueilControler',
+        ]);
+    }
 }
