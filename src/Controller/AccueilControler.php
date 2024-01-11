@@ -32,13 +32,24 @@ class AccueilControler extends AbstractController
     public function Lots2(EntityManagerInterface $entityManager): Response
     {
         $ad = new \DateTime('now');
-        $lotsRepo = $entityManager->getRepository(Lots::class);
+        /*$lotsRepo = $entityManager->getRepository(Lots::class);
         $listeLots = $lotsRepo->findBy(['datePeche' => $ad,
-                                        'equa' => 1]);
+                                        'equa' => 1]);*/
+        $qb = $entityManager->createQueryBuilder()
+            ->select('l.id, l.numBateau, l.espece, l.poidsBrutLot, l.codeEtat, b.nom, e.nom as asd')
+            ->from('App\Entity\Lots','l')
+            ->leftJoin('App\Entity\Bateau', 'b', 'WITH','l.numBateau = b.id')
+            ->leftJoin('App\Entity\Espece', 'e', 'WITH','l.espece = e.id')
+            ->where('l.equa = 1')
+            ->where('l.datePeche = :date')
+            ->setParameters(array('date' => $ad->format('Y-m-d')))
+            ->getQuery();
+
+        $ListeLots = $qb->execute();
+
         return $this->render('accueil/LotsEqua.html.twig', [
             'controller_name' => 'AccueilControler',
-            'equa' => $listeLots,
-            'ad' => $ad,
+            'equa' => $ListeLots,
         ]);
     }
 

@@ -38,7 +38,7 @@ class Lots
     #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $heureDebutEnchere = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(length: 50)]
     private ?String $codeEtat = null;
 
     #[ORM\Column(nullable: true)]
@@ -148,12 +148,12 @@ class Lots
         return $this;
     }
 
-    public function getCodeEtat(): ?int
+    public function getCodeEtat(): ?String
     {
         return $this->codeEtat;
     }
 
-    public function setCodeEtat(?String $codeEtat): static
+    public function setCodeEtat(String $codeEtat): static
     {
         $this->codeEtat = $codeEtat;
 

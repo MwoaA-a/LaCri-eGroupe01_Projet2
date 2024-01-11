@@ -5,20 +5,35 @@
 {% block body %}
 <div class="example-wrapper">
     <h1 id="date">Voici la liste des lots destinée l'équarrissage du </h1>
+</div>
+<div class="d-flex flex-row ps-5 justify-content-center col-10">
     <table class="table">
         <thead>
             <tr>
-                <th>Num Lots</th>
-                <th>Num Bateau</th>
-                <th>Poids du lots</th>
-                <th>EQTP</th>
+                <div class="p-2">
+                    <th>Num Lots</th>
+                </div>
+                <div class="p-2">
+                    <th>Nom du Bateau</th>
+                </div>
+                <div class="p-2">
+                    <th>Espèce de poisson</th>
+                </div>
+                <div class="p-2">
+                    <th>Poids du lots</th>
+                </div>
+                <div class="p-2">
+                    <th>Code état</th>
+                </div>
             </tr>
         <thead>
         <tbody class="text-align">
+            {# {{ dump(equa) }} #}
             {% for var in equa %}
             <tr>
                 <th>{{var.id}}</th>
-                <th>{{var.numBateau}}</th>
+                <th>{{var.nom}}</th>
+                <th>{{var.asd}}</th>
                 <th>{{var.poidsBrutLot}} Kg</th>
                 <th>{{var.codeEtat}}</th>
             </tr>
