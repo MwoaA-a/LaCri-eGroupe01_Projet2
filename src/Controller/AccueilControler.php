@@ -24,6 +24,14 @@ class AccueilControler extends AbstractController
         ]);
     }
 
+    #[Route('/equarrissage', name: 'app_Lots')]
+    public function Lots2(): Response
+    {
+        return $this->render('accueil/LotsEqua.html.twig', [
+            'controller_name' => 'AccueilControler',
+        ]);
+    }
+
     #[Route('/facture', name: 'app_facture')]
     public function facturation(): Response
     {
