@@ -39,7 +39,13 @@ class Lots
     private ?\DateTimeInterface $heureDebutEnchere = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $codeEtat = null;
+    private ?String $codeEtat = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $equa = null;
+
+    #[ORM\Column]
+    private ?int $espece = null;
 
     public function getId(): ?int
     {
@@ -147,9 +153,33 @@ class Lots
         return $this->codeEtat;
     }
 
-    public function setCodeEtat(?int $codeEtat): static
+    public function setCodeEtat(?String $codeEtat): static
     {
         $this->codeEtat = $codeEtat;
+
+        return $this;
+    }
+
+    public function getEqua(): ?int
+    {
+        return $this->equa;
+    }
+
+    public function setEqua(?int $equa): static
+    {
+        $this->equa = $equa;
+
+        return $this;
+    }
+
+    public function getEspece(): ?int
+    {
+        return $this->espece;
+    }
+
+    public function setEspece(int $espece): static
+    {
+        $this->espece = $espece;
 
         return $this;
     }

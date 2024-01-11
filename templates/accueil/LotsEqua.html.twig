@@ -3,12 +3,31 @@
 {% block title %}Les Lots de la criée{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
 <div class="example-wrapper">
-    <h1>Choisis ton lots mon bonhomme</h1>
+    <h1 id="date">Voici la liste des lots destinée l'équarrissage du </h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Num Lots</th>
+                <th>Num Bateau</th>
+                <th>Poids du lots</th>
+                <th>EQTP</th>
+            </tr>
+        <thead>
+        <tbody class="text-align">
+            {% for var in equa %}
+            <tr>
+                <th>{{var.id}}</th>
+                <th>{{var.numBateau}}</th>
+                <th>{{var.poidsBrutLot}} Kg</th>
+                <th>{{var.codeEtat}}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
+<script>
+    var ladate=new Date()
+    document.getElementById("date").innerHTML += ladate.getDate()+"/"+(ladate.getMonth()+1)+"/"+ladate.getFullYear() + " :";
+</script>
 {% endblock %}

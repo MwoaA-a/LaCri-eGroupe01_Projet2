@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Lots;
 
 class AccueilControler extends AbstractController
 {
@@ -25,10 +29,16 @@ class AccueilControler extends AbstractController
     }
 
     #[Route('/equarrissage', name: 'app_Lots')]
-    public function Lots2(): Response
+    public function Lots2(EntityManagerInterface $entityManager): Response
     {
+        $ad = new \DateTime('now');
+        $lotsRepo = $entityManager->getRepository(Lots::class);
+        $listeLots = $lotsRepo->findBy(['datePeche' => $ad,
+                                        'equa' => 1]);
         return $this->render('accueil/LotsEqua.html.twig', [
             'controller_name' => 'AccueilControler',
+            'equa' => $listeLots,
+            'ad' => $ad,
         ]);
     }
 
