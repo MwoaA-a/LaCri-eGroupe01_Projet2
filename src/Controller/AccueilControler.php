@@ -28,7 +28,7 @@ class AccueilControler extends AbstractController
         ]);
     }
 
-    #[Route('/equarrissage', name: 'app_Lots')]
+    #[Route('/equarrissage', name: 'app_equa')]
     public function Lots2(EntityManagerInterface $entityManager): Response
     {
         $ad = new \DateTime('now');
