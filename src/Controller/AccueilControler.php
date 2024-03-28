@@ -50,7 +50,8 @@ class AccueilControler extends AbstractController
         return $this->render('accueil/LotsEqua.html.twig', [
             'controller_name' => 'AccueilControler',
             'equa' => $ListeLots,
-        ]);
+            'currentDate' => date('d/m/Y'),
+            'currentDate2'=> date('d_m_Y')]);
     }
 
     #[Route('/facture', name: 'app_facture')]

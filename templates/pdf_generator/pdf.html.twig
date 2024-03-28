@@ -1,0 +1,84 @@
+<head>
+    <style>
+        /* Styles de base pour le tableau */
+.table {
+    width: 100%; /* Largeur du tableau */
+    border-collapse: collapse; /* Réduit les espaces entre les cellules */
+    margin-top: 20px; /* Marge en haut du tableau */
+    font-family: Arial, sans-serif; /* Famille de police */
+    color: #333; /* Couleur du texte */
+}
+
+.table thead {
+    background-color: #f2f2f2; /* Couleur de fond pour l'en-tête */
+}
+
+.table thead th {
+    padding: 10px; /* Espacement interne pour les en-têtes */
+    text-align: left; /* Alignement du texte */
+    border: 1px solid #ddd; /* Bordure autour des cellules */
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: #f9f9f9; /* Couleur de fond pour les lignes paires */
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1; /* Couleur de fond lors du survol */
+}
+
+.table tbody td {
+    padding: 10px; /* Espacement interne pour les cellules de données */
+    border: 1px solid #ddd; /* Bordure autour des cellules */
+}
+
+/* Styles pour le titre */
+h1 {
+    text-align: center; /* Centrer le titre */
+    color: #333; /* Couleur du texte */
+    margin-bottom: 20px; /* Marge en bas du titre */
+}
+
+.grost {
+    text-align: center; /* Centrer le titre */
+    color: #333; /* Couleur du texte */
+    margin-bottom: 20px; /* Marge en bas du titre */
+    font-weight: bold; /* Rend le texte en gras */
+    text-decoration: underline; /* Souligne le texte */
+    text-transform: uppercase; /* Transforme le texte en majuscules */
+}
+
+    </style>
+</head>
+<body>
+    <h1 class="grost">La Criée de Poulgoazec</h1>
+    <br>
+    <div>
+        <h1>Voici la liste des lots destinée l'équarrissage du {{ currentDate }} :</h1>
+    </div>
+    <br>
+    <div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Num Lots</th>
+                    <th>Nom du Bateau</th>
+                    <th>Espèce de poisson</th>
+                    <th>Poids du lots</th>
+                    <th>Code état</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for var in equa %}
+                <tr>
+                    <td>{{var.id}}</td>
+                    <td>{{var.nom}}</td>
+                    <td>{{var.asd}}</td>
+                    <td>{{var.poidsBrutLot}} Kg</td>
+                    <td>{{var.codeEtat}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>

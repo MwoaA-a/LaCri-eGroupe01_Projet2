@@ -1337,6 +1337,9 @@ class NoProxyPattern
 
 class HttpClient {
 
+    /** @var null|string */
+    private static $caPath;
+
     private $options = array('http' => array());
     private $disableTls = false;
 
@@ -1615,34 +1618,32 @@ class HttpClient {
     */
     public static function getSystemCaRootBundlePath()
     {
-        static $caPath = null;
-
-        if ($caPath !== null) {
-            return $caPath;
+        if (self::$caPath !== null) {
+            return self::$caPath;
         }
 
         // If SSL_CERT_FILE env variable points to a valid certificate/bundle, use that.
         // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
         $envCertFile = getenv('SSL_CERT_FILE');
         if ($envCertFile && is_readable($envCertFile) && validateCaFile(file_get_contents($envCertFile))) {
-            return $caPath = $envCertFile;
+            return self::$caPath = $envCertFile;
         }
 
         // If SSL_CERT_DIR env variable points to a valid certificate/bundle, use that.
         // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
         $envCertDir = getenv('SSL_CERT_DIR');
         if ($envCertDir && is_dir($envCertDir) && is_readable($envCertDir)) {
-            return $caPath = $envCertDir;
+            return self::$caPath = $envCertDir;
         }
 
         $configured = ini_get('openssl.cafile');
         if ($configured && strlen($configured) > 0 && is_readable($configured) && validateCaFile(file_get_contents($configured))) {
-            return $caPath = $configured;
+            return self::$caPath = $configured;
         }
 
         $configured = ini_get('openssl.capath');
         if ($configured && is_dir($configured) && is_readable($configured)) {
-            return $caPath = $configured;
+            return self::$caPath = $configured;
         }
 
         $caBundlePaths = array(
@@ -1658,22 +1659,24 @@ class HttpClient {
             '/usr/local/etc/ssl/cert.pem', // FreeBSD 10.x
             '/usr/local/etc/openssl/cert.pem', // OS X homebrew, openssl package
             '/usr/local/etc/openssl@1.1/cert.pem', // OS X homebrew, openssl@1.1 package
+            '/opt/homebrew/etc/openssl@3/cert.pem', // macOS silicon homebrew, openssl@3 package
+            '/opt/homebrew/etc/openssl@1.1/cert.pem', // macOS silicon homebrew, openssl@1.1 package
         );
 
         foreach ($caBundlePaths as $caBundle) {
             if (@is_readable($caBundle) && validateCaFile(file_get_contents($caBundle))) {
-                return $caPath = $caBundle;
+                return self::$caPath = $caBundle;
             }
         }
 
         foreach ($caBundlePaths as $caBundle) {
             $caBundle = dirname($caBundle);
             if (is_dir($caBundle) && glob($caBundle.'/*')) {
-                return $caPath = $caBundle;
+                return self::$caPath = $caBundle;
             }
         }
 
-        return $caPath = false;
+        return self::$caPath = false;
     }
 
     public static function getPackagedCaFile()

@@ -4,9 +4,9 @@
 
 {% block body %}
 <div class="example-wrapper">
-    <h1 id="date">Voici la liste des lots destinée l'équarrissage du </h1>
+    <h1 id="date">Voici la liste des lots destinée l'équarrissage du {{ currentDate }} :</h1>
 </div>
-<div class="d-flex flex-row ps-5 justify-content-center col-10">
+<div class="d-flex flex-row ps-5 justify-content-center col-10 lead">
     <table class="table">
         <thead>
             <tr>
@@ -31,18 +31,41 @@
             {# {{ dump(equa) }} #}
             {% for var in equa %}
             <tr>
-                <th>{{var.id}}</th>
-                <th>{{var.nom}}</th>
-                <th>{{var.asd}}</th>
-                <th>{{var.poidsBrutLot}} Kg</th>
-                <th>{{var.codeEtat}}</th>
+                <td>{{var.id}}</td>
+                <td>{{var.nom}}</td>
+                <td>{{var.asd}}</td>
+                <td>{{var.poidsBrutLot}} Kg</td>
+                <td>{{var.codeEtat}}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+<div class="d-flex flex-row-reverse ps-5 col-10">
+    <div class="col-2 ps-5 pe-5"><a href="/equarrissage/{{ currentDate2 }}.pdf"  target="_blank" ><button type="button" class="btn btn-primary"  id="liveToastBtn">Génération du pdf</button></a></div>
+</div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <img src="{{ asset('img/criée.png') }}" class="rounded me-2" width=10% height=10% alt"La criée">
+        <strong class="me-auto">La Criée de Poulgoazec</strong>
+        <small>PDF</small>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        Votre PDF viens d'être générer
+      </div>
+    </div>
+  </div>
 <script>
-    var ladate=new Date()
-    document.getElementById("date").innerHTML += ladate.getDate()+"/"+(ladate.getMonth()+1)+"/"+ladate.getFullYear() + " :";
+    const toastTrigger = document.getElementById('liveToastBtn')
+    const toastLiveExample = document.getElementById('liveToast')
+
+    if (toastTrigger) {
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+        toastTrigger.addEventListener('click', () => {
+            toastBootstrap.show()
+        })
+    }
 </script>
 {% endblock %}
