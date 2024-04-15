@@ -7,8 +7,10 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Lots;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccueilControler extends AbstractController
 {
@@ -20,11 +22,35 @@ class AccueilControler extends AbstractController
         ]);
     }
 
-    #[Route('/Lots', name: 'app_Lots')]
-    public function Lots(): Response
+    #[Route('/Lots/{date}', name: 'app_Lots')]
+    public function Lots(String $date, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
     {
+        // Vérification du format de la date
+        $format = 'd_m_Y';
+        $dateValide = \DateTime::createFromFormat($format, $date);
+        if (!$dateValide || $dateValide->format($format) !== $date) {
+            $ad = new \DateTime('now');
+            $dateActuelle = $ad->format('d_m_Y');
+            return $this->redirect('/Lots/'.$dateActuelle);
+
+        }
+    
+        $ad = \DateTime::createFromFormat($format, $date);
+        $qb = $entityManager->createQueryBuilder()
+            ->select('l.id, l.numBateau, l.espece, l.poidsBrutLot, el.label, b.nom, e.nom as asd')
+            ->from('App\Entity\Lots','l')
+            ->leftJoin('App\Entity\Bateau', 'b', 'WITH','l.numBateau = b.id')
+            ->leftJoin('App\Entity\EtatLots', 'el', 'WITH','l.codeEtat = el.id')
+            ->leftJoin('App\Entity\Espece', 'e', 'WITH','l.espece = e.id')
+            ->where('l.datePeche = :date')
+            ->setParameters(array('date' => $ad->format('Y-m-d')))
+            ->getQuery();
+    
+        $ListeLots = $qb->execute();
         return $this->render('accueil/Lots.html.twig', [
             'controller_name' => 'AccueilControler',
+            'equa' => $ListeLots,
+            'currentDate' => $ad->format('d/m/Y'),
         ]);
     }
 
@@ -52,7 +78,7 @@ class AccueilControler extends AbstractController
             'controller_name' => 'AccueilControler',
             'equa' => $ListeLots,
             'currentDate' => date('d/m/Y'),
-            'currentDate2'=> date('d_m_Y')]);
+            'CurrentDateBtn'=> date('d_m_Y')]);
     }
 
     #[Route('/facture', name: 'app_facture')]

@@ -7,19 +7,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" href="Lots">Lots</a>
+          
+          <a class="nav-link" href="{{ path('app_Lots', {'date': date()|date('Y-m-d')}) }}">Lots</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="facture">Facture</a>
+          <a class="nav-link" href="/facture">Facture</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="info">La criée</a>
-        </li>
+          <a class="nav-link" href="/info">La criée</a>
         <li class="nav-item">
-          <a class="nav-link" href="mon-compte">Mon Compte</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="equarrissage">Equarrissage</a>
+          <a class="nav-link" href="/equarrissage">Equarrissage</a>
         </li>
       </ul>
     </div>

@@ -1,14 +1,115 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Les Lots de la criée{% endblock %}
+{% block title %}Les Lots de la criée
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Choisis ton lots mon bonhomme</h1>
+	<div class="container">
+		<div class="row">
+			<!-- Titre à gauche -->
+			<div class="col-md-8 d-flex align-items-center">
+				<h1>Voici la liste des lots du {{ currentDate }} :</h1>
+			</div>
+	
+			<!-- DatePicker à droite -->
+			<div class="col-md-2 pt-5">
+				<form id="dateForm" action="" method="post">
+					<div class="mb-3">
+						<label for="datePicker" class="form-label">Sélectionnez une date</label>
+						<input type="date" class="form-control" id="datePicker" name="date">
+					</div>
+				</form>    
+			</div>
+		</div>
+	</div>
+	
+	<div class="d-flex flex-row ps-5 justify-content-center col-10 lead">
+		<table class="table">
+			<thead>
+				<tr>
+					<div class="p-2">
+						<th>Num Lots</th>
+					</div>
+					<div class="p-2">
+						<th>Nom du Bateau</th>
+					</div>
+					<div class="p-2">
+						<th>Espèce de poisson</th>
+					</div>
+					<div class="p-2">
+						<th>Poids du lots</th>
+					</div>
+					<div class="p-2">
+						<th>Code état</th>
+					</div>
+					<div class="p-2">
+						<th></th>
+					</div>
+				</tr>
+			</thead>
+			<thead></thead>
+			<tbody
+				class="text-align">
+				{# {{ dump(equa) }} #}
+				{% for var in equa %}
+					<tr>
+						<td>{{var.id}}</td>
+						<td>{{var.nom}}</td>
+						<td>{{var.asd}}</td>
+						<td>{{var.poidsBrutLot}}Kg</td>
+						<td>{{var.label}}</td>
+						<td><a href=""><button type="button" class="btn btn-primary"  id="liveToastBtn"></button></a></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
+
+<script>
+$(document).ready(function(){
+	// Fonction pour convertir la date de DD_MM_YYYY à YYYY-MM-DD
+    function convertDateFormat(date) {
+        var parts = date.split('_');
+        return parts[2] + '-' + parts[1] + '-' + parts[0];
+    }
+
+    // Analyse l'URL pour récupérer la valeur de la date
+    var path = window.location.pathname;
+    var pathParts = path.split('/');
+    var dateFromUrl = pathParts[pathParts.length - 1]; // Supposant que la date est le dernier segment de l'URL
+
+    // Vérifie si la date a été trouvée dans l'URL
+    if (dateFromUrl) {
+        // Convertit la date du format DD_MM_YYYY à YYYY-MM-DD
+        var formattedDate = convertDateFormat(dateFromUrl);
+
+        // Définit la valeur du DatePicker
+        $('#datePicker').val(formattedDate);
+    }
+	// Sélectionne l'élément input de type date par son ID
+    $('#datePicker').on('change', function() {
+        // Récupère la date sélectionnée
+        var selectedDate = $(this).val();
+
+		// Stocke la date sélectionnée dans le localStorage
+		localStorage.setItem('selectedDate', selectedDate);
+
+        // Affiche la date sélectionnée dans la console
+        console.log("Date sélectionnée : " + selectedDate);
+
+        // Divise la date en ses composants
+        var dateParts = selectedDate.split('-');
+
+        // Réorganise les composants dans l'ordre DD_MM_YYYY
+        var formattedDate = dateParts[2] + '_' + dateParts[1] + '_' + dateParts[0];
+
+        // Redirige l'utilisateur vers la page avec la date formatée
+        window.location.href = '/Lots/' + formattedDate;
+    });
+});
+
+</script>
+		
 {% endblock %}
+
