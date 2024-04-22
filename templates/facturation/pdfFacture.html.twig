@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Facture n° {{idlot}}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .facture {
+            width: 90%;
+            margin: auto;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+        .facture h1 {
+            text-align: center;
+        }
+        .facture table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .facture table, .facture th, .facture td {
+            border: 1px solid #000;
+        }
+        .facture th, .facture td {
+            padding: 10px;
+            text-align: left;
+        }
+        .facture th {
+            background-color: #f2f2f2;
+        }
+        .small-cell {
+            font-size: 12px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="facture">
+        <h1>Facture n° {{idlot}}</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Numéro lot</th>
+                    <th>Nom du Bateau</th>
+                    <th>Date de Pêche</th>
+                    <th>Espèce</th>
+                    <th>Poids Brut du Lot (kg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lot in lot %}
+                    <tr>
+                        <td>{{ lot.id }}</td>
+                        <td>{{ lot.nom }} / <br> ({{ lot.Imma }})</td>
+                        <td>{{ lot.datePeche|date('d/m/Y') }}</td>
+                        <td>{{ lot.asd }} ({{ lot.espece }})</td>
+                        <td>{{ lot.poidsBrutLot }} Kg</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

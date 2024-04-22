@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Facture!{% endblock %}
+
+{% block body %}
+    <div class="example-wrapper">
+        <h1 id="date">Voici la liste des factures :</h1>
+    </div>
+    <div class="d-flex flex-row ps-5 justify-content-center col-11 lead">
+        <div class="col-1">
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Numéro de facture</th>
+                    <th>Date de facturation</th>
+                    <th>État de paiement</th>
+                    <th>Modification</th>
+                    <th>Impression</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facture in fac %}
+                    <tr>
+                        <td>{{facture.id}}</td>
+                        <td>{{facture.dateFacturation|date('d/m/Y')}}</td>
+                        <td>{{facture.etat}}</td>
+                        <td><a href="/facture/modification/fac_{{ facture.id }}"><button class="btn btn-primary {% if facture.etat == 1 %}disabled{% endif %}">Modification</button></a></td>
+                        <td><a href="facture/impression/facture_{{facture.id}}.pdf"><button class="btn btn-primary">PDF</button></a></td>
+                        <td>
+                            {% if facture.etat == 0 %}
+                                <a href="/facture/fermer/{{ facture.id }}" class="delete-facture"><button class="btn btn-danger">Fermer la facture</button></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            {% set startPage = currentPage - 2 %}
+            {% set endPage = currentPage + 2 %}
+            {% if startPage < 1 %}
+                {% set startPage = 1 %}
+                {% set endPage = 5 %}
+            {% elseif endPage > totalPages %}
+                {% set endPage = totalPages %}
+                {% set startPage = totalPages - 4 %}
+            {% endif %}
+            <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                <a class="page-link" href="{{ path('app_facture2', {'page': 1}) }}" aria-label="First">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% for page in startPage..endPage %}
+                <li class="page-item {% if page == currentPage %}active{% endif %}">
+                    <a class="page-link" href="{{ path('app_facture2', {'page': page}) }}">{{ page }}</a>
+                </li>
+            {% endfor %}
+            <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                <a class="page-link" href="{{ path('app_facture2', {'page': totalPages}) }}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="d-flex flex-row-reverse ps-5 col-10">
+        <div class="col-2 pe-5"><a href="/facture/modification/ajout"><button type="submit" class="btn btn-primary" id="liveToastBtn">Créer une facture</button></a></div>
+    </div>
+    <script>
+    </script>
+{% endblock %}

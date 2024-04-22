@@ -41,11 +41,20 @@ class Lots
     #[ORM\Column(length: 50)]
     private ?String $codeEtat = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $equa = null;
-
     #[ORM\Column]
     private ?int $espece = null;
+
+    #[ORM\Column(length: 1, nullable: true)]
+    private ?string $idQualite = null;
+
+    #[ORM\Column(length: 3, nullable: true)]
+    private ?string $idPresentation = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $idTaille = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $idFacture = null;
 
     public function getId(): ?int
     {
@@ -160,18 +169,6 @@ class Lots
         return $this;
     }
 
-    public function getEqua(): ?int
-    {
-        return $this->equa;
-    }
-
-    public function setEqua(?int $equa): static
-    {
-        $this->equa = $equa;
-
-        return $this;
-    }
-
     public function getEspece(): ?int
     {
         return $this->espece;
@@ -180,6 +177,54 @@ class Lots
     public function setEspece(int $espece): static
     {
         $this->espece = $espece;
+
+        return $this;
+    }
+
+    public function getIdQualite(): ?string
+    {
+        return $this->idQualite;
+    }
+
+    public function setIdQualite(?string $idQualite): static
+    {
+        $this->idQualite = $idQualite;
+
+        return $this;
+    }
+
+    public function getIdPresentation(): ?string
+    {
+        return $this->idPresentation;
+    }
+
+    public function setIdPresentation(?string $idPresentation): static
+    {
+        $this->idPresentation = $idPresentation;
+
+        return $this;
+    }
+
+    public function getIdTaille(): ?int
+    {
+        return $this->idTaille;
+    }
+
+    public function setIdTaille(?int $idTaille): static
+    {
+        $this->idTaille = $idTaille;
+
+        return $this;
+    }
+
+    public function getIdFacture(): ?int
+    {
+        return $this->idFacture;
+    }
+
+    public function setIdFacture(?int $idFacture): static
+    {
+        $this->idFacture = $idFacture;
 
         return $this;
     }

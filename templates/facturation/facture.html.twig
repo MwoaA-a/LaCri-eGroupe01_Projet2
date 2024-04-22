@@ -7,16 +7,16 @@
 	<div class="container">
 		<div class="row">
 			<!-- Titre à gauche -->
-			<div class="col-md-8 d-flex align-items-center">
-				<h1>Voici la liste des lots du {{ currentDate }} :</h1>
+			<div class="col-md-9 d-flex align-items-center">
+				<h1>Voici la liste des lots non vendues du {{ currentDate }} :</h1>
 			</div>
 	
 			<!-- DatePicker à droite -->
 			<div class="col-md-2 pt-5">
 				<form id="dateForm" action="" method="post">
 					<div class="mb-3">
-						<label for="datePicker" class="form-label">Sélectionnez une date</label>
-						<input type="date" class="form-control" id="datePickerLots2" name="date">
+						<label for="datePickerLot1" class="form-label">Sélectionnez une date</label>
+						<input type="date" class="form-control" id="datePickerLot1" name="date">
 					</div>
 				</form>    
 			</div>
@@ -39,24 +39,24 @@
 					<div class="p-2">
 						<th>Poids du lots</th>
 					</div>
-					<div class="p-2">
-						<th>Code état</th>
-					</div>
 				</tr>
 			</thead>
 			<thead></thead>
-			<tbody class="text-align">
+			<tbody
+				class="text-align">
 				{% for var in equa %}
 					<tr>
 						<td>{{var.id}}</td>
 						<td>{{var.nom}}</td>
 						<td>{{var.asd}}</td>
 						<td>{{var.poidsBrutLot}}Kg</td>
-						<td>{{var.label}}</td>
 					</tr>
 				{% endfor %}
 			</tbody>
 		</table>
+	</div>
+	<div class="d-flex flex-row-reverse ps-5 col-10">
+		<div class="col-2 pe-5"><a href="/facture" ><button type="submit" class="btn btn-primary"  id="liveToastBtn">Gestion des factures</button></a></div>
 	</div>
 </div>
 {% endblock %}

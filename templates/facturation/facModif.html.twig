@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Facture!{% endblock %}
+
+{% block body %}
+    <div class="example-wrapper">
+        <h1 id="date">Voici la liste des lots pour la facture n°{{idFac}} :</h1>
+    </div>
+    <div class="container">
+		<div class="row">
+			<div class="col-3">
+			</div>
+			<!-- ComboBox à gauche -->
+			<div class="col-4 d-flex align-items-center">
+				<form id="addLotForm" name="addLotForm" method="post">
+                    <select name="Lot" id="Lot_addFacture" class="mt-3 mb-3">
+						<option value=""> n° | Date peche | bateau | espece </option>
+                        {% for lot in lot %}
+                            <option value="{{lot.id}}">{{lot.id}} | {{lot.datePeche|date('d/m/Y')}} | {{lot.nom}} | {{lot.espece}} </option>
+                        {% endfor %}
+                    </select>
+			</div>
+	
+			<!-- Bouton d'envoie à droite -->
+			<div class="col-2 mt-2 align-items-center">
+					<div class="mb-3">
+                        <button type="submit" class="btn btn-primary" id="submitBtnFactureAddLot" name="addLotbtn" disabled>Ajouter</button>
+                        </form>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    
+    <div class="d-flex flex-row ps-5 justify-content-center col-10 lead">
+		<table class="table">
+			<thead>
+				<tr>
+					<div class="p-2">
+						<th>Num Lots</th>
+					</div>
+					<div class="p-2">
+						<th>Nom du Bateau</th>
+					</div>
+					<div class="p-2">
+						<th>Date de peche</th>
+					</div>
+                    <div class="p-2">
+						<th>Espece</th>
+					</div>
+					<div class="p-2">
+						<th></th>
+					</div>
+				</tr>
+			</thead>
+			<thead></thead>
+			<tbody class="text-align">
+				{% for var in lotFac %}
+						<tr>
+							<td>{{var.id}}</td>
+							<td>{{var.nom}}</td>
+							<td>{{var.datePeche|date('d/m/Y')}}</td>
+							<td>{{var.espece}}</td>
+							<td>
+								<form id="suppLotForm" name="suppLotForm" action="" method="post">
+									<input type="hidden" name="idLotSupp" value="{{var.id}}">
+									<button type="submit" class="btn btn-danger suppLotFormbtn" id="submitBtnFactureSuppLot" name="suppLotFormbtn">Supprimer</button>
+								</form>
+							</td>
+						</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

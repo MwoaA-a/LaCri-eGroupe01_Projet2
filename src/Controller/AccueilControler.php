@@ -2,14 +2,10 @@
 
 namespace App\Controller;
 
-use DateTimeImmutable;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Entity\Lots;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class AccueilControler extends AbstractController
@@ -22,8 +18,9 @@ class AccueilControler extends AbstractController
         ]);
     }
 
+
     #[Route('/Lots/{date}', name: 'app_Lots')]
-    public function Lots(String $date, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
+    public function lot(String $date, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
     {
         // Vérification du format de la date
         $format = 'd_m_Y';
@@ -36,17 +33,17 @@ class AccueilControler extends AbstractController
         }
     
         $ad = \DateTime::createFromFormat($format, $date);
-        $qb = $entityManager->createQueryBuilder()
+        $db = $entityManager->createQueryBuilder()
             ->select('l.id, l.numBateau, l.espece, l.poidsBrutLot, el.label, b.nom, e.nom as asd')
             ->from('App\Entity\Lots','l')
             ->leftJoin('App\Entity\Bateau', 'b', 'WITH','l.numBateau = b.id')
             ->leftJoin('App\Entity\EtatLots', 'el', 'WITH','l.codeEtat = el.id')
             ->leftJoin('App\Entity\Espece', 'e', 'WITH','l.espece = e.id')
-            ->where('l.datePeche = :date')
+            ->where('l.datePeche = :date') 
             ->setParameters(array('date' => $ad->format('Y-m-d')))
             ->getQuery();
     
-        $ListeLots = $qb->execute();
+        $ListeLots = $db->execute();
         return $this->render('accueil/Lots.html.twig', [
             'controller_name' => 'AccueilControler',
             'equa' => $ListeLots,
@@ -67,8 +64,7 @@ class AccueilControler extends AbstractController
             ->leftJoin('App\Entity\Bateau', 'b', 'WITH','l.numBateau = b.id')
             ->leftJoin('App\Entity\EtatLots', 'el', 'WITH','l.codeEtat = el.id')
             ->leftJoin('App\Entity\Espece', 'e', 'WITH','l.espece = e.id')
-            ->where('l.codeEtat = 3')
-            ->where('l.datePeche = :date')
+            ->where('l.codeEtat = 3','l.datePeche = :date')
             ->setParameters(array('date' => $ad->format('Y-m-d')))
             ->getQuery();
 
@@ -79,14 +75,6 @@ class AccueilControler extends AbstractController
             'equa' => $ListeLots,
             'currentDate' => date('d/m/Y'),
             'CurrentDateBtn'=> date('d_m_Y')]);
-    }
-
-    #[Route('/facture', name: 'app_facture')]
-    public function facturation(): Response
-    {
-        return $this->render('accueil/facturation.html.twig', [
-            'controller_name' => 'AccueilControler',
-        ]);
     }
 
     #[Route('/mon-compte', name: 'app_compte')]
