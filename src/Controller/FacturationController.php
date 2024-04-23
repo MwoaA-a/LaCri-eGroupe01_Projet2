@@ -113,7 +113,7 @@ class FacturationController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->redirectToRoute('app_facture3', ['id' => $id]);
+        return $this->redirectToRoute('app_gestion_facture', ['id' => $id]);
     }
 
     #[Route('/facture/gestion/fac_{id}', name: 'app_gestion_facture')]
