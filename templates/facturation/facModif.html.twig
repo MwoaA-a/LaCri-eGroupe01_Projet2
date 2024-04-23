@@ -4,8 +4,15 @@
 
 {% block body %}
     <div class="example-wrapper">
-        <h1 id="date">Voici la liste des lots pour la facture n°{{idFac}} :</h1>
-    </div>
+		<div class="row">
+			<div class="col-md-8">
+				<h1 id="date">Voici la liste des lots pour la facture n°{{idFac}} :</h1>
+			</div>
+			<div class="col-md-2 d-flex justify-content-end">
+				<a href="/facture/gestion/fac_{{ idFac }}" ><button type="submit" class="btn btn-warning ps-4 pe-4"> Retour </button></a>
+			</div>
+		</div>
+	</div>
     <div class="container">
 		<div class="row">
 			<div class="col-3">

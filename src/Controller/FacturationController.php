@@ -69,15 +69,19 @@ class FacturationController extends AbstractController
         $totalItems = $paginator->count();
         $totalPages = ceil($totalItems / $limit);
 
+        $ad = new \DateTime('now');
+        $dateActuelle = $ad->format('d_m_Y');
+
         return $this->render('facturation/addFact.html.twig', [
             'controller_name' => 'AccueilControler',
             'fac' => $paginator,
             'currentPage' => $page,
             'totalPages' => $totalPages,
+            'date' => $dateActuelle,
         ]);
     }
 
-    #[Route('/facture/modification/ajout', name: 'app_facture4')]
+    #[Route('/facture/ajout', name: 'app_facture4')]
     public function facture4(EntityManagerInterface $entityManager, RequestStack $requestStack): Response
     {
         
@@ -95,24 +99,45 @@ class FacturationController extends AbstractController
             return $this->redirect('/facture/');
     }
 
-    #[Route('/facture/fermer/{id}', name: 'app_facture_fermer')]
+    #[Route('/facture/gestion/fac_{id}/fermer', name: 'app_facture_fermer')]
     public function facture5(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id): Response
     {
         
         $facture = $entityManager->getRepository(Facture::class)->find($id);
 
         if (!$facture) {
-        throw $this->createNotFoundException('Facture non trouvée');
+            return $this->redirect('/facture');
         }
 
         $facture->setEtat(1);
 
         $entityManager->flush();
 
-        return $this->redirect('/facture');
+        return $this->redirectToRoute('app_facture3', ['id' => $id]);
     }
 
-    #[Route('/facture/modification/fac_{id}', name: 'app_facture3')]
+    #[Route('/facture/gestion/fac_{id}', name: 'app_gestion_facture')]
+    public function gestFac(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id): Response
+    {
+        $qb = $entityManager->createQueryBuilder()
+            ->select('f')
+            ->from('App\Entity\Facture', 'f')
+            ->where('f.id = :id')
+            ->setParameters(array('id' => $id))
+            ->orderBy('f.id', 'DESC')
+            ->getQuery();
+
+        $infFac = $qb->execute();
+
+        
+        return $this->render('facturation/gestFac.html.twig', [
+            'controller_name' => 'AccueilControler',
+            'idFac' => $id,
+            'fac' => $infFac,
+        ]);
+    }
+
+    #[Route('/facture/gestion/fac_{id}/modification', name: 'app_facture3')]
     public function facture3(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id, Request $request): Response
     {
         if ($request->isMethod('POST')) {
@@ -168,7 +193,7 @@ class FacturationController extends AbstractController
         ]);
     }
 
-    #[Route("/facture/impression/facture_{id}.pdf", name: 'app_pdf_generator_fac')]
+    #[Route("/facture/gestion/fac_{id}/impression", name: 'app_pdf_generator_fac')]
     public function index2(EntityManagerInterface $entityManager, string $id): Response
     {
         
