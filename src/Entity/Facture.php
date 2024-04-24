@@ -20,6 +20,9 @@ class Facture
     #[ORM\Column]
     private ?int $etat = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $idAcheteur = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +48,18 @@ class Facture
     public function setEtat(int $etat): static
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getIdAcheteur(): ?int
+    {
+        return $this->idAcheteur;
+    }
+
+    public function setIdAcheteur(?int $idAcheteur): static
+    {
+        $this->idAcheteur = $idAcheteur;
 
         return $this;
     }

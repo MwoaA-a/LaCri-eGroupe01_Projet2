@@ -120,8 +120,9 @@ class FacturationController extends AbstractController
     public function gestFac(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id): Response
     {
         $qb = $entityManager->createQueryBuilder()
-            ->select('f')
+            ->select('f.etat, f.idAcheteur , a.nomAcheteur as nom, a.prenomAcheteur as prenom')
             ->from('App\Entity\Facture', 'f')
+            ->leftJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
             ->where('f.id = :id')
             ->setParameters(array('id' => $id))
             ->orderBy('f.id', 'DESC')
@@ -134,6 +135,45 @@ class FacturationController extends AbstractController
             'controller_name' => 'AccueilControler',
             'idFac' => $id,
             'fac' => $infFac,
+        ]);
+    }
+
+    #[Route('/facture/gestion/fac_{id}/client', name: 'app_gestion_facture_client')]
+    public function gestFacClient(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id, Request $request): Response
+    {
+        if ($request->isMethod('POST')) {
+            $selectedClient = $request->request->get('setClientFacture');
+            $facture = $entityManager->getRepository(Facture::class)->find($id);
+            $facture->setIdAcheteur($selectedClient);
+
+            $entityManager->flush();
+            
+            return $this->redirectToRoute('app_gestion_facture_client', ['id' => $id]);
+        }
+        $qb = $entityManager->createQueryBuilder()
+            ->select('f.etat, f.idAcheteur , a.nomAcheteur as nom, a.prenomAcheteur as prenom')
+            ->from('App\Entity\Facture', 'f')
+            ->leftJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
+            ->where('f.id = :id')
+            ->setParameters(array('id' => $id))
+            ->orderBy('f.id', 'DESC')
+            ->getQuery();
+
+        $infFac = $qb->execute();
+
+        $tb = $entityManager->createQueryBuilder()
+            ->select('a.nomAcheteur, a.prenomAcheteur, a.id')
+            ->from('App\Entity\Acheteur', 'a')
+            ->getQuery();
+
+        $infClient = $tb->execute();
+
+        
+        return $this->render('facturation/gestFacClient.html.twig', [
+            'controller_name' => 'AccueilControler',
+            'idFac' => $id,
+            'fac' => $infFac,
+            'client' => $infClient,
         ]);
     }
 
@@ -210,10 +250,23 @@ class FacturationController extends AbstractController
 
         $ListeLots = $qb->execute();
 
+        $tb = $entityManager->createQueryBuilder()
+            ->select('f, a.nomAcheteur, a.prenomAcheteur, a.codePostale, a.sexe, a.adresse, a.ville')
+            ->from('App\Entity\Facture', 'f')
+            ->leftJoin('App\Entity\Acheteur', 'a', 'WITH', 'f.idAcheteur = a.id')
+            ->where('f.id = :id')
+            ->setParameters(array('id' => $id))
+            ->getQuery();
+
+        $AcheteurInf = $tb->execute();
+
+
+
         $html = $this->renderView('facturation/pdfFacture.html.twig', [
             'controller_name' => 'PdfGeneratorController',
             'lot' => $ListeLots,
             'idlot' => $id,
+            'CliInf' => $AcheteurInf,
         ]);
 
         $dompdf = new Dompdf();

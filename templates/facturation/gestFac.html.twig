@@ -16,14 +16,19 @@
             <div class="card mb-3">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="card-title">Facture n°{{idFac}}</h2>
+                        <div>
+                            <h2 class="card-title">Facture n°{{idFac}}</h2>
+                            <h2 class="card-title">Client : {% if facture.idAcheteur == null %} XXXX XXXX {% else %}{{facture.nom}} {{facture.prenom}}{% endif %}</h2> 
+                        </div>
                         <div>
                             {% if facture.etat == 0 %}
-                                <a href="/facture/gestion/fac_{{ idFac }}/modification" class="btn btn-primary me-2">Modification</a>
-                                <a href="/facture/gestion/fac_{{ idFac }}/fermer" class="btn btn-danger me-2">Fermer la facture</a>
+                                <a href="/facture/gestion/fac_{{ idFac }}/modification" class="btn btn-primary me-2">Modification des lots associés</a>
+                                <a href="/facture/gestion/fac_{{ idFac }}/client" class="btn btn-primary">Modification du client associé</a>
+                                <a href="/facture/gestion/fac_{{ idFac }}/fermer" class="delete-facture btn btn-danger me-2">Fermer la facture</a>
                                 <button class="btn btn-primary disabled">Envoie par mail</button>
                             {% else %}
-                                <button class="btn btn-primary disabled me-2">Modification</button>
+                                <button class="btn btn-primary disabled me-2">Modification des lots associés</button>
+                                <button class="btn btn-primary disabled">Modification du client associé</button>
                                 <button class="btn btn-danger disabled me-2">Fermer la facture</button>
                                 <a href="" class="btn btn-primary">Envoie par mail</a>
                             {% endif %}

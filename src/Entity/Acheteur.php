@@ -28,6 +28,9 @@ class Acheteur
     #[ORM\Column(length: 50)]
     private ?string $ville = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $sexe = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -89,6 +92,18 @@ class Acheteur
     public function setVille(string $ville): static
     {
         $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getSexe(): ?string
+    {
+        return $this->sexe;
+    }
+
+    public function setSexe(?string $sexe): static
+    {
+        $this->sexe = $sexe;
 
         return $this;
     }

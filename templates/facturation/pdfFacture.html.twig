@@ -39,6 +39,11 @@
 <body>
     <div class="facture">
         <h1>Facture n° {{idlot}}</h1>
+        {% for c in CliInf %}
+        <p>{% if c.sexe == 'M' %} M. {% else %} Mme. {% endif %} {{c.nomAcheteur}} {{c.prenomAcheteur}} <br>
+        {{c.adresse}} <br>
+        {{c.codePostale}}, {{c.ville}}</p>
+        {% endfor %}
         <table>
             <thead>
                 <tr>
