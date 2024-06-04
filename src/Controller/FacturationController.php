@@ -120,7 +120,7 @@ class FacturationController extends AbstractController
     public function gestFac(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id): Response
     {
         $qb = $entityManager->createQueryBuilder()
-            ->select('f.etat, f.idAcheteur , a.nomAcheteur as nom, a.prenomAcheteur as prenom')
+            ->select('f.etat, f.idAcheteur , a.nomAcheteur as nom, a.sexe, a.prenomAcheteur as prenom')
             ->from('App\Entity\Facture', 'f')
             ->leftJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
             ->where('f.id = :id')
@@ -151,7 +151,7 @@ class FacturationController extends AbstractController
             return $this->redirectToRoute('app_gestion_facture_client', ['id' => $id]);
         }
         $qb = $entityManager->createQueryBuilder()
-            ->select('f.etat, f.idAcheteur , a.nomAcheteur as nom, a.prenomAcheteur as prenom')
+            ->select('f.etat, f.idAcheteur, a.sexe, a.nomAcheteur as nom, a.prenomAcheteur as prenom')
             ->from('App\Entity\Facture', 'f')
             ->leftJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
             ->where('f.id = :id')

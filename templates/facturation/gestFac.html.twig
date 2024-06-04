@@ -18,21 +18,22 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h2 class="card-title">Facture n°{{idFac}}</h2>
-                            <h2 class="card-title">Client : {% if facture.idAcheteur == null %} XXXX XXXX {% else %}{{facture.nom}} {{facture.prenom}}{% endif %}</h2> 
+                            <h2 class="card-title">{% if facture.idAcheteur == null %}M. XXXX XXXX {% else %} {% if facture.sexe == 'M' %} M. {% else %} Mme. {% endif %} {{facture.nom|upper }} {{facture.prenom|capitalize}}{% endif %}</h2> 
                         </div>
-                        <div>
+                        <div class="col-6">
                             {% if facture.etat == 0 %}
                                 <a href="/facture/gestion/fac_{{ idFac }}/modification" class="btn btn-primary me-2">Modification des lots associés</a>
                                 <a href="/facture/gestion/fac_{{ idFac }}/client" class="btn btn-primary">Modification du client associé</a>
                                 <a href="/facture/gestion/fac_{{ idFac }}/fermer" class="delete-facture btn btn-danger me-2">Fermer la facture</a>
                                 <button class="btn btn-primary disabled">Envoie par mail</button>
+                                <button class="btn btn-secondary disabled">PDF</button>
                             {% else %}
                                 <button class="btn btn-primary disabled me-2">Modification des lots associés</button>
                                 <button class="btn btn-primary disabled">Modification du client associé</button>
                                 <button class="btn btn-danger disabled me-2">Fermer la facture</button>
                                 <a href="" class="btn btn-primary">Envoie par mail</a>
+                                <a href="/facture/gestion/fac_{{idFac}}/impression" target="_blank" class="btn btn-secondary">PDF</a>
                             {% endif %}
-                            <a href="/facture/gestion/fac_{{idFac}}/impression" target="_blank" class="btn btn-secondary">PDF</a>
                         </div>
                     </div>
                 </div>
