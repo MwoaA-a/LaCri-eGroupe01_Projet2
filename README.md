@@ -1,4 +1,4 @@
-# La Criée Projet 1 (Groupe-01)
+# La Criée Projet 2 (Groupe-01)
 
 Il s'agit du second projet de deuxième année de BTS SIO option SLAM réalisé en PHP avec le FrameWork Symfony 7.0.
 
