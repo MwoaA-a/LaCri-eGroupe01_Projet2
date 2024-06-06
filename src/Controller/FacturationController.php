@@ -17,37 +17,6 @@ use Dompdf\Dompdf;
 
 class FacturationController extends AbstractController
 {
-    #[Route('/facture/{date}', name: 'app_facture')]
-    public function facture(String $date, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator,Request $request): Response
-    {
-        // Vérification du format de la date
-        $format = 'd_m_Y';
-        $dateValide = \DateTime::createFromFormat($format, $date);
-        if (!$dateValide || $dateValide->format($format) !== $date) {
-            $ad = new \DateTime('now');
-            $dateActuelle = $ad->format('d_m_Y');
-            return $this->redirect('/facture/'.$dateActuelle);
-
-        }
-    
-        $ad = \DateTime::createFromFormat($format, $date);
-        $tb = $entityManager->createQueryBuilder()
-            ->select('l.id, l.numBateau, l.espece, l.poidsBrutLot, b.nom, e.nom as asd')
-            ->from('App\Entity\Lots','l')
-            ->leftJoin('App\Entity\Bateau', 'b', 'WITH','l.numBateau = b.id')
-            ->leftJoin('App\Entity\Espece', 'e', 'WITH','l.espece = e.id')
-            ->where('l.codeEtat = 1','l.datePeche = :date')
-            ->setParameters(array('date' => $ad->format('Y-m-d')))
-            ->getQuery();
-    
-        $ListeLots = $tb->execute();
-        return $this->render('facturation/facture.html.twig', [
-            'controller_name' => 'AccueilControler',
-            'equa' => $ListeLots,
-            'currentDate' => $ad->format('d/m/Y'),
-        ]);
-    }
-
     #[Route('/facture', name: 'app_facture2')]
     public function facture2(EntityManagerInterface $entityManager, RequestStack $requestStack): Response
     {
@@ -81,8 +50,39 @@ class FacturationController extends AbstractController
         ]);
     }
 
-    #[Route('/facture/ajout', name: 'app_facture4')]
-    public function facture4(EntityManagerInterface $entityManager, RequestStack $requestStack): Response
+    #[Route('/facture/{date}', name: 'app_facture')]
+    public function facture(String $date, EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator,Request $request): Response
+    {
+        // Vérification du format de la date
+        $format = 'd_m_Y';
+        $dateValide = \DateTime::createFromFormat($format, $date);
+        if (!$dateValide || $dateValide->format($format) !== $date) {
+            $ad = new \DateTime('now');
+            $dateActuelle = $ad->format('d_m_Y');
+            return $this->redirect('/facture/'.$dateActuelle);
+
+        }
+    
+        $ad = \DateTime::createFromFormat($format, $date);
+        $tb = $entityManager->createQueryBuilder()
+            ->select('l.id, l.numBateau, l.espece, l.poidsBrutLot, b.nom, e.nom as asd')
+            ->from('App\Entity\Lots','l')
+            ->leftJoin('App\Entity\Bateau', 'b', 'WITH','l.numBateau = b.id')
+            ->leftJoin('App\Entity\Espece', 'e', 'WITH','l.espece = e.id')
+            ->where('l.codeEtat = 1','l.datePeche = :date')
+            ->setParameters(array('date' => $ad->format('Y-m-d')))
+            ->getQuery();
+    
+        $ListeLots = $tb->execute();
+        return $this->render('facturation/facture.html.twig', [
+            'controller_name' => 'AccueilControler',
+            'equa' => $ListeLots,
+            'currentDate' => $ad->format('d/m/Y'),
+        ]);
+    }
+
+    #[Route('/facture/ajout', name: 'app_facture43')]
+    public function facture43(EntityManagerInterface $entityManager, RequestStack $requestStack): Response
     {
         
         $facture = new Facture();
@@ -96,7 +96,7 @@ class FacturationController extends AbstractController
             $entityManager->persist($facture);
             $entityManager->flush();
 
-            return $this->redirect('/facture/');
+        return $this->redirect("/facture");
     }
 
     #[Route('/facture/gestion/fac_{id}/fermer', name: 'app_facture_fermer')]
@@ -120,9 +120,10 @@ class FacturationController extends AbstractController
     public function gestFac(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id): Response
     {
         $qb = $entityManager->createQueryBuilder()
-            ->select('f.etat, f.idAcheteur , a.nomAcheteur as nom, a.sexe, a.prenomAcheteur as prenom')
+            ->select('f.etat, f.idAcheteur, a.sexe, a.nomAcheteur as nom, a.prenomAcheteur as prenom, f.TypeDelai, f.dateFacturation, d.description')
             ->from('App\Entity\Facture', 'f')
-            ->leftJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
+            ->innerJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
+            ->innerJoin('App\Entity\Delai', 'd', 'WITH','f.TypeDelai = d.id')
             ->where('f.id = :id')
             ->setParameters(array('id' => $id))
             ->orderBy('f.id', 'DESC')
@@ -174,6 +175,46 @@ class FacturationController extends AbstractController
             'idFac' => $id,
             'fac' => $infFac,
             'client' => $infClient,
+        ]);
+    }
+
+    #[Route('/facture/gestion/fac_{id}/delai', name: 'app_gestion_facture_delai')]
+    public function gestFacDelai(EntityManagerInterface $entityManager, RequestStack $requestStack, String $id, Request $request): Response
+    {
+        if ($request->isMethod('POST')) {
+            $selectedDelai = $request->request->get('setTypeDelaiFacture');
+            $facture = $entityManager->getRepository(Facture::class)->find($id);
+            $facture->setTypeDelai($selectedDelai);
+
+            $entityManager->flush();
+            
+            return $this->redirectToRoute('app_gestion_facture_delai', ['id' => $id]);
+        }
+        $qb = $entityManager->createQueryBuilder()
+            ->select('f.etat, f.idAcheteur, a.sexe, a.nomAcheteur as nom, a.prenomAcheteur as prenom, f.TypeDelai, f.dateFacturation, d.description')
+            ->from('App\Entity\Facture', 'f')
+            ->innerJoin('App\Entity\Acheteur', 'a', 'WITH','f.idAcheteur = a.id')
+            ->innerJoin('App\Entity\Delai', 'd', 'WITH','f.TypeDelai = d.id')
+            ->where('f.id = :id')
+            ->setParameters(array('id' => $id))
+            ->orderBy('f.id', 'DESC')
+            ->getQuery();
+
+        $infFac = $qb->execute();
+
+        $tb = $entityManager->createQueryBuilder()
+            ->select('d.id, d.description')
+            ->from('App\Entity\Delai', 'd')
+            ->getQuery();
+
+        $infDelai = $tb->execute();
+
+        
+        return $this->render('facturation/gestFacDelai.html.twig', [
+            'controller_name' => 'AccueilControler',
+            'idFac' => $id,
+            'fac' => $infFac,
+            'Delai' => $infDelai,
         ]);
     }
 

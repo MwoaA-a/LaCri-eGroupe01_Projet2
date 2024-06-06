@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    
     // Désactiver le bouton par défaut
     $('#submitBtnFactureAddLot').prop('disabled', true);
 

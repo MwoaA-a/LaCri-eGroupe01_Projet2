@@ -23,6 +23,9 @@ class Facture
     #[ORM\Column(nullable: true)]
     private ?int $idAcheteur = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $TypeDelai = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -60,6 +63,18 @@ class Facture
     public function setIdAcheteur(?int $idAcheteur): static
     {
         $this->idAcheteur = $idAcheteur;
+
+        return $this;
+    }
+
+    public function getTypeDelai(): ?int
+    {
+        return $this->TypeDelai;
+    }
+
+    public function setTypeDelai(?int $TypeDelai): static
+    {
+        $this->TypeDelai = $TypeDelai;
 
         return $this;
     }
